@@ -1,0 +1,147 @@
+=====================================
+PROTOCOLO DE APLICAÇÃO - NETCHAT
+=====================================
+
+O NetChat usa um protocolo customizado em JSON com 4 campos obrigatórios:
+
+=====================================
+CAMPOS OBRIGATÓRIOS:
+=====================================
+
+1. TIPO
+   - Define o tipo de mensagem
+   - Valores válidos: "mensagem", "alerta", "evento"
+   - Exemplo: "tipo": "mensagem"
+
+2. USUARIO
+   - Nome do usuário que enviou
+   - Comprimento: 1-100 caracteres
+   - Exemplo: "usuario": "João Silva"
+
+3. CONTEUDO
+   - Texto da mensagem
+   - Comprimento: 1-5000 caracteres
+   - Exemplo: "conteudo": "Olá pessoal!"
+
+4. TIMESTAMP
+   - Hora em que foi enviada
+   - Formato: milliseconds desde 1970
+   - Exemplo: "timestamp": 1779839574819
+
+=====================================
+EXEMPLO DE MENSAGEM VÁLIDA:
+=====================================
+
+{
+  "tipo": "mensagem",
+  "usuario": "João Silva",
+  "conteudo": "Olá pessoal!",
+  "timestamp": 1779839574819
+}
+
+=====================================
+EXEMPLO DE MENSAGEM DE ALERTA:
+=====================================
+
+{
+  "tipo": "alerta",
+  "usuario": "Sistema",
+  "conteudo": "RTT acima de 100ms",
+  "timestamp": 1779839574820
+}
+
+=====================================
+VALIDAÇÃO:
+=====================================
+
+Todas as mensagens são validadas:
+- Todos os 4 campos são obrigatórios
+- Se algum campo faltar, retorna erro 400
+- Se algum campo for inválido, retorna erro 400
+- Apenas mensagens válidas são salvas
+
+=====================================
+FLUXO DE COMUNICAÇÃO:
+=====================================
+
+1. Cliente envia mensagem JSON
+2. Servidor recebe e valida
+3. Se válida, salva no banco de dados
+4. Envia para todos os clientes conectados via WebSocket
+5. Clientes recebem em tempo real
+
+=====================================
+BANCO DE DADOS:
+=====================================
+
+Todas as mensagens são salvas em MySQL:
+
+Tabela: mensagens
+Campos:
+- id: Identificador único
+- tipo: Tipo da mensagem
+- usuario: Nome do usuário
+- conteudo: Texto da mensagem
+- timestamp: Hora do envio
+- data_criacao: Data de criação no BD
+
+=====================================
+TIPOS DE MENSAGEM:
+=====================================
+
+1. MENSAGEM
+   - Chat entre usuários
+   - Exemplo: "Olá pessoal!"
+
+2. ALERTA
+   - Alertas do sistema
+   - Exemplo: "RTT acima de 100ms"
+
+3. EVENTO
+   - Eventos de rede
+   - Exemplo: "Novo usuário conectado"
+
+=====================================
+COMUNICAÇÃO EM TEMPO REAL:
+=====================================
+
+Via WebSocket:
+- Conexão aberta entre cliente e servidor
+- Mensagens entregues instantaneamente
+- Latência baixa (média 71ms)
+- Suporte a múltiplos clientes
+
+=====================================
+MÉTRICAS COLETADAS:
+=====================================
+
+RTT (Round-Trip Time):
+- Tempo de ida e volta
+- Média: 71.1 ms
+- Mínimo: 38.2 ms
+- Máximo: 150.8 ms
+
+Throughput:
+- Taxa de transferência
+- Média: 764.3 kbps
+- Mínimo: 450.2 kbps
+- Máximo: 1050.5 kbps
+
+Packet Loss:
+- Perda de pacotes
+- Média: 0.77%
+- Mínimo: 0.0%
+- Máximo: 2.1%
+
+=====================================
+ALERTAS:
+=====================================
+
+Alertas automáticos quando:
+- RTT > 100ms
+- Throughput < 500kbps
+- Packet Loss > 1%
+
+Total de alertas disparados: 7
+
+=====================================
